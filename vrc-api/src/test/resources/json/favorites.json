@@ -1,0 +1,26 @@
+[
+  {
+    "id": "fvrt_1",
+    "type": "avatar",
+    "favoriteId": "avtr_xxxx",
+    "tags": [
+      "avatars1"
+    ]
+  },
+  {
+    "id": "fvrt_2",
+    "type": "friend",
+    "favoriteId": "usr_xxxx",
+    "tags": [
+      "group_0"
+    ]
+  },
+  {
+    "id": "fvrt_3",
+    "type": "world",
+    "favoriteId": "wrld_xxxx",
+    "tags": [
+      "worlds1"
+    ]
+  }
+]

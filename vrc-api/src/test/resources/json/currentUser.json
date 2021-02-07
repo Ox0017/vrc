@@ -1,0 +1,70 @@
+{
+  "id": "usr_id",
+  "username": "username",
+  "displayName": "Username",
+  "userIcon": "",
+  "bio": "",
+  "bioLinks": [],
+  "pastDisplayNames": [],
+  "hasEmail": true,
+  "hasPendingEmail": false,
+  "email": "user@email.com",
+  "obfuscatedEmail": "u******@email.com",
+  "obfuscatedPendingEmail": "",
+  "emailVerified": true,
+  "hasBirthday": true,
+  "unsubscribe": true,
+  "friends": [
+    "usr_friend_online",
+    "usr_friend_active",
+    "usr_friend_offline"
+  ],
+  "friendGroupNames": [],
+  "currentAvatarImageUrl": "https://api.vrchat.cloud/api/1/file/file_123",
+  "currentAvatarThumbnailImageUrl": "https://api.vrchat.cloud/api/1/image/file_123",
+  "fallbackAvatar": "avtr_fallback",
+  "currentAvatar": "avtr_current",
+  "currentAvatarAssetUrl": "https://api.vrchat.cloud/api/1/file/file_123",
+  "accountDeletionDate": null,
+  "acceptedTOSVersion": 7,
+  "steamId": "",
+  "steamDetails": {},
+  "oculusId": "",
+  "hasLoggedInFromClient": false,
+  "homeLocation": "",
+  "twoFactorAuthEnabled": false,
+  "feature": {
+    "twoFactorAuth": true
+  },
+  "status": "active",
+  "statusDescription": "",
+  "state": "offline",
+  "tags": [
+    "system_world_access",
+    "system_avatar_access",
+    "system_trust_basic",
+    "system_feedback_access",
+    "system_trust_known",
+    "language_eng",
+    "system_trust_trusted",
+    "system_supporter",
+    "system_early_adopter",
+    "system_trust_veteran"
+  ],
+  "developerType": "none",
+  "last_login": "2021-01-31T15:13:43.928Z",
+  "last_platform": "standalonewindows",
+  "allowAvatarCopying": true,
+  "date_joined": "2021-01-08",
+  "isFriend": false,
+  "friendKey": "1234567890asdfghjkl1234567890yxc",
+  "onlineFriends": [
+    "usr_friend_online"
+  ],
+  "activeFriends": [
+    "usr_friend_active"
+  ],
+  "offlineFriends": [
+    "usr_friend_offline"
+  ]
+}
