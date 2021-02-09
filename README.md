@@ -1,6 +1,6 @@
-# vrc
+# VRChatApiClient
 
-Java implementation based on [vrchatapi.github.io](https://github.com/vrchatapi/vrchatapi.github.io)
+Java based implementation based on [vrchatapi.github.io](https://github.com/vrchatapi/vrchatapi.github.io)
 
 ## Disclaimer
 
@@ -15,32 +15,18 @@ This is the official response of the VRChat Team (from Tupper more specifically)
 ## Description
 
 This package provides an API client that can be used against the VRChat API.
-Not all requests are implemented yet, have a look at the *VRChatApiClient* interface to see all currently available methods.
-
-### Current version
-
-		<dependency>
-			<groupId>com.github.Ox0017.vrc</groupId>
-			<artifactId>vrc-api</artifactId>
-			<version>1.10-SNAPSHOT</version>
-		</dependency>
-
-### Build
-
-		mvn clean install
-
-requires [maven](https://maven.apache.org/download.cgi)
+Not all requests are implemented yet, have a look at the [VRChatApiClient](https://github.com/Ox0017/vrc/blob/main/vrc-api/src/main/java/com/github/Ox0017/vrc/VRChatApiClient.java) interface to see all currently available methods.
 
 ### Usage
 
 Example:
 
-		VRChatApiClient client = new VRChatApiClientImpl();
-		
-		VrcRequestContext context = new VrcRequestContext();
-		context.setUsername("");
-		context.setPassword("");
-		
-		CurrentUserDto currentUser = client.getCurrentUser(context);
+	VRChatApiClient client = new VRChatApiClientImpl();
+	
+	VrcRequestContext context = new VrcRequestContext();
+	context.setUsername("username");
+	context.setPassword("password");
+	
+	CurrentUserDto currentUser = client.getCurrentUser(context);
 
 The constructor supports also providing a custom httpClient if required (the default constructor creates an httpClient with 2000 ms timeout)
