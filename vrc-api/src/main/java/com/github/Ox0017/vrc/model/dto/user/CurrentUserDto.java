@@ -2,8 +2,14 @@ package com.github.Ox0017.vrc.model.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.Ox0017.vrc.model.dto.UnknownDto;
+import com.github.Ox0017.vrc.model.dto.PlatformDto;
+import com.github.Ox0017.vrc.model.dto.serialization.deserialize.OffsetDateTimeDeserializer;
+import com.github.Ox0017.vrc.model.dto.serialization.serialize.OffsetDateTimeSerializer;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -100,11 +106,13 @@ public class CurrentUserDto {
 	@JsonProperty("homeLocation")
 	private String homeLocation;
 
+	@JsonSerialize(using = OffsetDateTimeSerializer.class)
+	@JsonDeserialize(using = OffsetDateTimeDeserializer.class)
 	@JsonProperty("last_login")
-	private String lastLogin;
+	private OffsetDateTime lastLogin;
 
 	@JsonProperty("last_platform")
-	private String lastPlatform;
+	private PlatformDto lastPlatform;
 
 	@JsonProperty("hasLoggedInFromClient")
 	private Boolean hasLoggedInFromClient;
@@ -376,19 +384,19 @@ public class CurrentUserDto {
 		this.homeLocation = homeLocation;
 	}
 
-	public String getLastLogin() {
+	public OffsetDateTime getLastLogin() {
 		return this.lastLogin;
 	}
 
-	public void setLastLogin(final String lastLogin) {
+	public void setLastLogin(final OffsetDateTime lastLogin) {
 		this.lastLogin = lastLogin;
 	}
 
-	public String getLastPlatform() {
+	public PlatformDto getLastPlatform() {
 		return this.lastPlatform;
 	}
 
-	public void setLastPlatform(final String lastPlatform) {
+	public void setLastPlatform(final PlatformDto lastPlatform) {
 		this.lastPlatform = lastPlatform;
 	}
 
@@ -505,8 +513,8 @@ public class CurrentUserDto {
 		sb.append(", currentAvatarImageUrl='").append(this.currentAvatarImageUrl).append('\'');
 		sb.append(", currentAvatarThumbnailImageUrl='").append(this.currentAvatarThumbnailImageUrl).append('\'');
 		sb.append(", homeLocation='").append(this.homeLocation).append('\'');
-		sb.append(", lastLogin='").append(this.lastLogin).append('\'');
-		sb.append(", lastPlatform='").append(this.lastPlatform).append('\'');
+		sb.append(", lastLogin=").append(this.lastLogin);
+		sb.append(", lastPlatform=").append(this.lastPlatform);
 		sb.append(", hasLoggedInFromClient=").append(this.hasLoggedInFromClient);
 		sb.append(", twoFactorAuthEnabled=").append(this.twoFactorAuthEnabled);
 		sb.append(", allowAvatarCopying=").append(this.allowAvatarCopying);

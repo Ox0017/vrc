@@ -1,0 +1,230 @@
+{
+  "messageOfTheDay": "hello world",
+  "events": {
+    "distanceClose": 2,
+    "distanceFactor": 100,
+    "distanceFar": 80,
+    "groupDistance": 3,
+    "maximumBunchSize": 247,
+    "notVisibleFactor": 100,
+    "playerOrderBucketSize": 5,
+    "playerOrderFactor": 55,
+    "slowUpdateFactorThreshold": 25,
+    "viewSegmentLength": 5
+  },
+  "dis-countdown": "2021-01-01T01:01:01.000Z",
+  "homepageRedirectTarget": "https://hello.vrchat.com",
+  "youtubedl-hash": "03-C6-87-5D",
+  "youtubedl-version": "2021-01-08",
+  "timeOutWorldId": "wrld_timeout",
+  "gearDemoRoomId": "2282253502",
+  "releaseServerVersionStandalone": "public_server_01",
+  "downloadLinkWindows": "https://www.oculus.com/experiences/rift/997678176960598/",
+  "releaseAppVersionStandalone": "0.12.0p3",
+  "devAppVersionStandalone": "0.12.0p3",
+  "devServerVersionStandalone": "dev_server_01",
+  "devDownloadLinkWindows": "www.vrchat.net",
+  "currentTOSVersion": 7,
+  "releaseSdkUrl": "http://files.vrchat.cloud/sdk/VRCSDK-2019.09.18.12.05_Public.unitypackage",
+  "releaseSdkVersion": "VRCSDK-2019.09.18.12.05_Public",
+  "devSdkUrl": "https://vrchat.com/home/download",
+  "devSdkVersion": "2020.09.25.00.08",
+  "whiteListedAssetUrls": [
+    "http://dbinj8iahsbec.cloudfront.net/plugins",
+    "http://dbinj8iahsbec.cloudfront.net/",
+    "https://dbinj8iahsbec.cloudfront.net/",
+    "https://dev-api.vrchat.cloud/api/1/file/",
+    "https://api.vrchat.cloud/api/1/file/",
+    "https://files.vrchat.cloud/unmanaged/",
+    "https://builds.vrchat.cloud/"
+  ],
+  "clientApiKey": "clientApiKey",
+  "viveWindowsUrl": "http://store.steampowered.com/app/438100/",
+  "sdkUnityVersion": "2018.4.20f1",
+  "hubWorldId": "wrld_hub",
+  "homeWorldId": "wrld_home",
+  "tutorialWorldId": "wld_toturial",
+  "disableEventStream": false,
+  "disableAvatarGating": false,
+  "disableFeedbackGating": false,
+  "disableRegistration": false,
+  "disableUpgradeAccount": false,
+  "disableCommunityLabs": false,
+  "disableCommunityLabsPromotion": false,
+  "disableTwoFactorAuth": false,
+  "disableSteamNetworking": true,
+  "disableHello": false,
+  "disableUdon": false,
+  "plugin": "no_kick_unlisted",
+  "sdkNotAllowedToPublishMessage": "Welcome the VRChat SDK!",
+  "sdkDeveloperFaqUrl": "https://docs.vrchat.com/docs/frequently-asked-questions#section-why-can-t-i-upload-content-yet-",
+  "sdkDiscordUrl": "https://discord.gg/vrchat",
+  "notAllowedToSelectAvatarInPrivateWorldMessage": "For security reasons, you're not yet allowed to select avatars in private worlds or upload content.",
+  "userVerificationTimeout": 60,
+  "userUpdatePeriod": 60,
+  "userVerificationDelay": 5,
+  "userVerificationRetry": 30,
+  "worldUpdatePeriod": 60,
+  "moderationQueryPeriod": 60,
+  "clientDisconnectTimeout": 45000,
+  "defaultAvatar": "avtr_default",
+  "dynamicWorldRows": [
+    {
+      "name": "Hot",
+      "sortHeading": "heat",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "index": 1
+    },
+    {
+      "name": "Winter 2020",
+      "sortHeading": "shuffle",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "tag": "author_tag_winter",
+      "index": 2
+    },
+    {
+      "name": "Udon Alpha Spotlight",
+      "sortHeading": "shuffle",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "tag": "admin_featured_world_udon",
+      "index": 3
+    },
+    {
+      "name": "Spotlight",
+      "sortHeading": "updated",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "tag": "admin_community_spotlight",
+      "index": 4
+    },
+    {
+      "name": "Community Labs",
+      "sortHeading": "labs",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "index": 5
+    },
+    {
+      "name": "Active Cross Platform",
+      "sortHeading": "active",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "AllPlatforms",
+      "index": 6
+    },
+    {
+      "name": "Active My Platform",
+      "sortHeading": "active",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformOnly",
+      "index": 7
+    },
+    {
+      "name": "Random",
+      "sortHeading": "shuffle",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "index": 8
+    },
+    {
+      "name": "Avatar Worlds",
+      "sortHeading": "heat",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "tag": "author_tag_avatar",
+      "index": 9
+    },
+    {
+      "name": "Games",
+      "sortHeading": "heat",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "tag": "author_tag_game",
+      "index": 10
+    },
+    {
+      "name": "Updated Recently",
+      "sortHeading": "updated",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "index": 11
+    },
+    {
+      "name": "New",
+      "sortHeading": "publication",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "index": 12
+    },
+    {
+      "name": "Recent",
+      "sortHeading": "recent",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "index": 13
+    },
+    {
+      "name": "Mine",
+      "sortHeading": "updated",
+      "sortOwnership": "mine",
+      "sortOrder": "descending",
+      "platform": "any",
+      "index": 14
+    },
+    {
+      "name": "Classics",
+      "sortHeading": "trending",
+      "sortOwnership": "any",
+      "sortOrder": "descending",
+      "platform": "ThisPlatformSupported",
+      "index": 15
+    }
+  ],
+  "disableAvatarCopying": false,
+  "announcements": [
+    {
+      "name": "220121a_modified_clients",
+      "text": "modified clients of any kind are not allowed"
+    }
+  ],
+  "useReliableUdpForVoice": false,
+  "updateRateMsMaximum": 1000,
+  "updateRateMsMinimum": 50,
+  "updateRateMsNormal": 200,
+  "clientBPSCeiling": 18432,
+  "clientReservedPlayerBPS": 7168,
+  "clientSentCountAllowance": 15,
+  "uploadAnalysisPercent": 1,
+  "downloadUrls": {
+    "sdk2": "https://files.vrchat.cloud/sdk/VRCSDK2-2021.01.28.19.08_Public.unitypackage",
+    "sdk3-worlds": "https://files.vrchat.cloud/sdk/VRCSDK3-WORLD-2021.01.28.19.07_Public.unitypackage",
+    "sdk3-avatars": "https://files.vrchat.cloud/sdk/VRCSDK3-AVATAR-2021.01.28.19.08_Public.unitypackage"
+  },
+  "address": "1062 Folsom St., Suite 200, San Francisco, CA, 94103",
+  "contactEmail": "hello@vrchat.com",
+  "supportEmail": "support@vrchat.com",
+  "jobsEmail": "jobs@vrchat.com",
+  "copyrightEmail": "copyright@vrchat.com",
+  "moderationEmail": "moderation@vrchat.com",
+  "disableEmail": false,
+  "appName": "VrChat",
+  "serverName": "green-api-6576",
+  "deploymentGroup": "green",
+  "buildVersionTag": "master-build-2021-02-09-michael-accessoriestroglo",
+  "apiKey": "apiKey"
+}

@@ -1,4 +1,4 @@
-package com.github.Ox0017.vrc.model.dto.avatar;
+package com.github.Ox0017.vrc.model.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

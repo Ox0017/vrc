@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.github.Ox0017.vrc.model.dto.PlatformDto;
 import com.github.Ox0017.vrc.model.dto.UnknownDto;
 import com.github.Ox0017.vrc.model.dto.serialization.deserialize.OffsetDateTimeDeserializer;
 import com.github.Ox0017.vrc.model.dto.serialization.serialize.OffsetDateTimeSerializer;

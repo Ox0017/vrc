@@ -1,0 +1,51 @@
+[
+  {
+    "id": "usr_xxxx",
+    "username": "username",
+    "displayName": "Username",
+    "bio": "",
+    "currentAvatarImageUrl": "https://api.vrchat.cloud/api/1/file/file_xxxx",
+    "currentAvatarThumbnailImageUrl": "https://api.vrchat.cloud/api/1/image/file_xxxx",
+    "fallbackAvatar": "avtr_fallback",
+    "userIcon": "",
+    "last_platform": "standalonewindows",
+    "tags": [
+      "system_world_access",
+      "system_avatar_access",
+      "system_trust_basic",
+      "system_feedback_access",
+      "system_trust_known",
+      "language_eng",
+      "system_trust_trusted",
+      "system_supporter",
+      "system_early_adopter",
+      "system_trust_veteran"
+    ],
+    "developerType": "none",
+    "isFriend": true,
+    "status": "active",
+    "statusDescription": "",
+    "friendKey": "friendKey",
+    "last_login": "2021-12-24T00:00:30.123Z"
+  },
+  {
+    "id": "usr_yyyy",
+    "username": "username2",
+    "displayName": "Username2",
+    "bio": "",
+    "currentAvatarImageUrl": "https://api.vrchat.cloud/api/1/file/file_yyyy",
+    "currentAvatarThumbnailImageUrl": "https://api.vrchat.cloud/api/1/image/file_yyyy",
+    "fallbackAvatar": "avtr_fallback2",
+    "userIcon": "",
+    "last_platform": "standalonewindows",
+    "tags": [
+      "language_eng"
+    ],
+    "developerType": "none",
+    "isFriend": false,
+    "status": "active",
+    "statusDescription": "",
+    "friendKey": "friendKey2",
+    "last_login": "2021-12-24T00:00:31.456Z"
+  }
+]

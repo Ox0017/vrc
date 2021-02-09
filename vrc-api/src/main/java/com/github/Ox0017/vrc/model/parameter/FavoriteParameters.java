@@ -1,4 +1,4 @@
-package com.github.Ox0017.vrc.model;
+package com.github.Ox0017.vrc.model.parameter;
 
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteTypeDto;
 import org.apache.http.NameValuePair;
@@ -7,7 +7,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoriteParameters {
+public class FavoriteParameters implements RequestParameter {
 
 	private final FavoriteTypeDto type;
 
@@ -21,10 +21,12 @@ public class FavoriteParameters {
 		this.offset = offset;
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return this.type == null && this.amount == null && this.offset == null;
 	}
 
+	@Override
 	public NameValuePair[] getParameters() {
 		if (this.isEmpty()) {
 			return new NameValuePair[0];
@@ -56,9 +58,9 @@ public class FavoriteParameters {
 
 		private FavoriteTypeDto type;
 
-		private Integer amount;
+		private Integer amount = 10;
 
-		private Integer offset;
+		private Integer offset = 0;
 
 		/**
 		 * Adds the type parameter to filter results by their type
@@ -76,7 +78,7 @@ public class FavoriteParameters {
 		/**
 		 * Adds the amount parameter, how many results should be returned
 		 *
-		 * @param amount a value greater than 0 and less or equal 100
+		 * @param amount a value greater than 0 and less or equal 100, default: 10
 		 * @return the builder
 		 */
 		public Builder amount(final Integer amount) {
@@ -93,11 +95,11 @@ public class FavoriteParameters {
 		/**
 		 * Adds the offset parameter, used for paging
 		 *
-		 * @param offset a value greater than 0
+		 * @param offset a value greater or equal than 0, default: 0
 		 * @return the builder
 		 */
 		public Builder offset(final Integer offset) {
-			if (offset != null && offset < 1) {
+			if (offset != null && offset < 0) {
 				throw new IllegalArgumentException("Offset must be a positive value");
 			}
 			this.offset = offset;

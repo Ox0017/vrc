@@ -2,12 +2,16 @@ package com.github.Ox0017.vrc.impl;
 
 import com.github.Ox0017.vrc.TestSupport;
 import com.github.Ox0017.vrc.VRChatApiClient;
-import com.github.Ox0017.vrc.model.FavoriteParameters;
 import com.github.Ox0017.vrc.model.VrcRequestContext;
 import com.github.Ox0017.vrc.model.dto.avatar.AvatarDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteTypeDto;
 import com.github.Ox0017.vrc.model.dto.user.CurrentUserDto;
+import com.github.Ox0017.vrc.model.dto.user.DeveloperTypeDto;
+import com.github.Ox0017.vrc.model.dto.user.LimitedUserDto;
+import com.github.Ox0017.vrc.model.dto.user.UserDto;
+import com.github.Ox0017.vrc.model.parameter.FavoriteParameters;
+import com.github.Ox0017.vrc.model.parameter.UserParameters;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -329,6 +333,100 @@ public class VRChatApiClientImplTest extends TestSupport {
 		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
 
 		assertNotNull(currentUserDto);
+	}
+
+	@Test
+	public void testGetUserById() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("user.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final UserDto userDto = this.client.getUserById(vrcRequestContext, "usr_xxxx");
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/users/usr_xxxx", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertNotNull(userDto);
+	}
+
+	@Test
+	public void testGetUserByName() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("user.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final UserDto userDto = this.client.getUserByName(vrcRequestContext, "username");
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/users/username/name", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertNotNull(userDto);
+	}
+
+	@Test
+	public void testGetUsers() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("limitedUsers.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final List<LimitedUserDto> limitedUserDtos = this.client.getUsers(vrcRequestContext, UserParameters.Builder.create()
+				.search("some name")
+				.active(true)
+				.developerType(DeveloperTypeDto.NONE)
+				.amount(5)
+				.offset(1)
+				.build());
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/users/active?n=5&offset=1&developerType=none&search=some+name", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertNotNull(limitedUserDtos);
+	}
+
+	@Test
+	public void testGetUsers_Minimal() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("limitedUsers.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final List<LimitedUserDto> limitedUserDtos = this.client.getUsers(vrcRequestContext, UserParameters.Builder.create().build());
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/users?n=10&offset=0", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertNotNull(limitedUserDtos);
 	}
 
 	@Test

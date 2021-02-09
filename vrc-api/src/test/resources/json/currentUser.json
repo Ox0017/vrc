@@ -57,7 +57,7 @@
   "allowAvatarCopying": true,
   "date_joined": "2021-01-08",
   "isFriend": false,
-  "friendKey": "1234567890asdfghjkl1234567890yxc",
+  "friendKey": "friendKey",
   "onlineFriends": [
     "usr_friend_online"
   ],

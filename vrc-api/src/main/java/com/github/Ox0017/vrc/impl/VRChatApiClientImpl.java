@@ -4,15 +4,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.Ox0017.vrc.VRChatApiClient;
-import com.github.Ox0017.vrc.model.FavoriteParameters;
 import com.github.Ox0017.vrc.model.VrcRequestContext;
 import com.github.Ox0017.vrc.model.client.Response;
 import com.github.Ox0017.vrc.model.dto.avatar.AvatarDto;
+import com.github.Ox0017.vrc.model.dto.config.RemoteConfigDto;
 import com.github.Ox0017.vrc.model.dto.error.VrcErrorDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteTypeDto;
 import com.github.Ox0017.vrc.model.dto.user.AuthDto;
 import com.github.Ox0017.vrc.model.dto.user.CurrentUserDto;
+import com.github.Ox0017.vrc.model.dto.user.LimitedUserDto;
+import com.github.Ox0017.vrc.model.dto.user.UserDto;
+import com.github.Ox0017.vrc.model.parameter.FavoriteParameters;
+import com.github.Ox0017.vrc.model.parameter.RequestParameter;
+import com.github.Ox0017.vrc.model.parameter.UserParameters;
 import com.github.Ox0017.vrc.util.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.*;
@@ -43,8 +48,10 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 	private static final String AUTH = "auth";
 	private static final String AUTH_USER = AUTH + "/user";
 	private static final String AVATARS = "avatars";
+	private static final String CONFIG = "config";
 	private static final String FAVORITES = "favorites";
 	private static final String LOGOUT = "logout";
+	private static final String USERS = "users";
 
 	private final String baseUrl;
 
@@ -91,10 +98,32 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 	 * @param baseUrl    base url for all requests
 	 */
 	public VRChatApiClientImpl(final HttpClient httpClient, final String baseUrl) {
-		this.baseUrl = baseUrl;
+		if (baseUrl == null) {
+			throw new IllegalArgumentException("BaseUrl is null");
+		}
+		if (httpClient == null) {
+			throw new IllegalArgumentException("HttpClient is null");
+		}
+
+		this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
 		this.httpClient = httpClient;
 		this.objectMapper = new ObjectMapper();
 		this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+	}
+
+	@Override
+	public RemoteConfigDto getRemoteConfig(final VrcRequestContext vrcRequestContext) {
+		if (vrcRequestContext == null) {
+			throw new IllegalArgumentException("VrcRequestContext is null");
+		}
+
+		LOGGER.info("Get remote config");
+
+		final HttpUriRequest request = RequestBuilder.get(this.baseUrl + CONFIG).build();
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		return this.deserializeResponse(response, RemoteConfigDto.class);
 	}
 
 	@Override
@@ -184,7 +213,7 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 
 		LOGGER.info("Get favorites {} params", (favoriteParameters == null ? "without" : "with"));
 
-		final HttpUriRequest request = withParams(this.baseUrl + FAVORITES, favoriteParameters);
+		final HttpUriRequest request = getWithParams(this.baseUrl + FAVORITES, favoriteParameters);
 
 		final Response response = this.executeRequest(request, vrcRequestContext);
 
@@ -248,7 +277,7 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 		}
 		else {
 			final String errorMessage = this.deserializeError(response.getResponseBody());
-			LOGGER.info("Delete favorite {} failed with statusCode {}: {} ({})", favoriteId, response.getStatusCode(), response.getStatusPhrase(), errorMessage);
+			LOGGER.info("Delete favorite {} failed: {}", favoriteId, errorMessage);
 			return false;
 		}
 	}
@@ -280,6 +309,10 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 			return null;
 		}
 
+		if (avatarId == null) {
+			throw new IllegalArgumentException("AvatarId is null");
+		}
+
 		LOGGER.info("Select avatar {}", avatarId);
 
 		final HttpUriRequest request = RequestBuilder.put(this.baseUrl + AVATARS + "/" + avatarId + "/select").build();
@@ -287,6 +320,71 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 		final Response response = this.executeRequest(request, vrcRequestContext);
 
 		return this.deserializeResponse(response, CurrentUserDto.class);
+	}
+
+	@Override
+	public UserDto getUserById(final VrcRequestContext vrcRequestContext, final String userId) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return null;
+		}
+
+		if (userId == null) {
+			throw new IllegalArgumentException("UserId is null");
+		}
+
+		LOGGER.info("Get user by id {}", userId);
+
+		final HttpUriRequest request = RequestBuilder.get(this.baseUrl + USERS + "/" + userId).build();
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		return this.deserializeResponse(response, UserDto.class);
+	}
+
+	@Override
+	public UserDto getUserByName(final VrcRequestContext vrcRequestContext, final String userName) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return null;
+		}
+
+		if (userName == null) {
+			throw new IllegalArgumentException("UserName is null");
+		}
+
+		LOGGER.info("Get user by name {}", userName);
+
+		final HttpUriRequest request = RequestBuilder.get(this.baseUrl + USERS + "/" + userName + "/name").build();
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		return this.deserializeResponse(response, UserDto.class);
+	}
+
+	@Override
+	public List<LimitedUserDto> getUsers(final VrcRequestContext vrcRequestContext, final UserParameters userParameters) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return null;
+		}
+
+		if (userParameters == null) {
+			throw new IllegalArgumentException("UserParameters is null");
+		}
+
+		LOGGER.info("Get users by parameters");
+
+		final String path = userParameters.isActive() ? USERS + "/active" : USERS;
+		final HttpUriRequest request = getWithParams(this.baseUrl + path, userParameters);
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		final LimitedUserDto[] limitedUserDtoArray = this.deserializeResponse(response, LimitedUserDto[].class);
+		if (limitedUserDtoArray == null) {
+			return null;
+		}
+		return Stream.of(limitedUserDtoArray).collect(Collectors.toList());
 	}
 
 	@Override
@@ -335,7 +433,10 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 
 			if (httpResponse.getEntity() != null && httpResponse.getEntity().getContent() != null) {
 				response.setResponseBody(IOUtils.toString(httpResponse.getEntity().getContent(), StandardCharsets.UTF_8));
-				LOGGER.trace("Response body: {}", response.getResponseBody());
+				LOGGER.trace("Server Response {} {} with body: {}", response.getStatusCode(), response.getStatusPhrase(), response.getResponseBody());
+			}
+			else {
+				LOGGER.trace("Server Response {} {} without body", response.getStatusCode(), response.getStatusPhrase());
 			}
 			if (httpResponse instanceof CloseableHttpResponse) {
 				((CloseableHttpResponse) httpResponse).close();
@@ -403,7 +504,7 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 		else if (response.getStatusCode() != null) {
 			final String errorMessage = this.deserializeError(body);
 			if (errorMessage != null) {
-				LOGGER.warn("Server returned statusCode {}: {} with message '{}'", response.getStatusCode(), response.getStatusPhrase(), errorMessage);
+				LOGGER.info("Server returned: {}", errorMessage);
 			}
 			else {
 				LOGGER.warn("Server returned statusCode {}: {}", response.getStatusCode(), response.getStatusPhrase());
@@ -452,7 +553,7 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 		return "Basic " + Base64.getEncoder().encodeToString((vrcRequestContext.getUsername() + ":" + vrcRequestContext.getPassword()).getBytes());
 	}
 
-	private static HttpUriRequest withParams(final String url, final FavoriteParameters parameters) {
+	private static HttpUriRequest getWithParams(final String url, final RequestParameter parameters) {
 		if (parameters == null || parameters.isEmpty()) {
 			return RequestBuilder.get(url).build();
 		}

@@ -1,15 +1,27 @@
 package com.github.Ox0017.vrc;
 
-import com.github.Ox0017.vrc.model.FavoriteParameters;
 import com.github.Ox0017.vrc.model.VrcRequestContext;
 import com.github.Ox0017.vrc.model.dto.avatar.AvatarDto;
+import com.github.Ox0017.vrc.model.dto.config.RemoteConfigDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteTypeDto;
 import com.github.Ox0017.vrc.model.dto.user.CurrentUserDto;
+import com.github.Ox0017.vrc.model.dto.user.LimitedUserDto;
+import com.github.Ox0017.vrc.model.dto.user.UserDto;
+import com.github.Ox0017.vrc.model.parameter.FavoriteParameters;
+import com.github.Ox0017.vrc.model.parameter.UserParameters;
 
 import java.util.List;
 
 public interface VRChatApiClient {
+
+	/**
+	 * Remote config contains configuration that the game clients needs to work properly.
+	 *
+	 * @param vrcRequestContext No user credentials or session is needed, the context is enriched with apiKey from header
+	 * @return the config with clientApiKey
+	 */
+	RemoteConfigDto getRemoteConfig(final VrcRequestContext vrcRequestContext);
 
 	/**
 	 * Get user details for the given credentials or the current session and used for login.
@@ -92,6 +104,34 @@ public interface VRChatApiClient {
 	 * @return the current user with the selected avatar
 	 */
 	CurrentUserDto selectAvatar(final VrcRequestContext vrcRequestContext, final String avatarId);
+
+	/**
+	 * Get user by id
+	 *
+	 * @param vrcRequestContext session with auth and apiKey should already exist
+	 * @param userId            usr_xxxx
+	 * @return the public info about the user
+	 */
+	UserDto getUserById(final VrcRequestContext vrcRequestContext, final String userId);
+
+	/**
+	 * Get user by name
+	 *
+	 * @param vrcRequestContext session with auth and apiKey should already exist
+	 * @param userName          the lowercase in-game user name
+	 * @return the public info about the user
+	 */
+	UserDto getUserByName(final VrcRequestContext vrcRequestContext, final String userName);
+
+	/**
+	 * Get users by given parameters
+	 *
+	 * @param vrcRequestContext session with auth and apiKey should already exist
+	 * @param userParameters    to filter the result, for example by user name or type
+	 *                          use the builder methods to add the parameters: UserParameters.Builder.create()
+	 * @return list of selected users
+	 */
+	List<LimitedUserDto> getUsers(final VrcRequestContext vrcRequestContext, final UserParameters userParameters);
 
 	/**
 	 * Invalidates the current session.
