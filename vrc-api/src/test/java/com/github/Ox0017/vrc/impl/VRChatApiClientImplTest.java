@@ -4,13 +4,19 @@ import com.github.Ox0017.vrc.TestSupport;
 import com.github.Ox0017.vrc.VRChatApiClient;
 import com.github.Ox0017.vrc.model.VrcRequestContext;
 import com.github.Ox0017.vrc.model.dto.avatar.AvatarDto;
+import com.github.Ox0017.vrc.model.dto.config.RemoteConfigDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteTypeDto;
+import com.github.Ox0017.vrc.model.dto.friend.FriendStatusDto;
+import com.github.Ox0017.vrc.model.dto.notification.NotificationDto;
+import com.github.Ox0017.vrc.model.dto.notification.NotificationTypeDto;
 import com.github.Ox0017.vrc.model.dto.user.CurrentUserDto;
 import com.github.Ox0017.vrc.model.dto.user.DeveloperTypeDto;
 import com.github.Ox0017.vrc.model.dto.user.LimitedUserDto;
 import com.github.Ox0017.vrc.model.dto.user.UserDto;
 import com.github.Ox0017.vrc.model.parameter.FavoriteParameters;
+import com.github.Ox0017.vrc.model.parameter.FriendParameters;
+import com.github.Ox0017.vrc.model.parameter.NotificationParameters;
 import com.github.Ox0017.vrc.model.parameter.UserParameters;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
@@ -36,9 +42,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -91,6 +100,30 @@ public class VRChatApiClientImplTest extends TestSupport {
 	}
 
 	@Test
+	public void testGetRemoteConfig() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContext();
+
+		final String json = this.readJson("remoteConfig.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final RemoteConfigDto remoteConfigDto = this.client.getRemoteConfig(vrcRequestContext);
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/config", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertNotNull(remoteConfigDto);
+		assertEquals("apiKey", remoteConfigDto.getApiKey());
+		assertEquals("clientApiKey", remoteConfigDto.getClientApiKey());
+	}
+
+	@Test
 	public void testGetCurrentUser() throws IOException {
 		// given
 		final VrcRequestContext vrcRequestContext = vrcRequestContext();
@@ -110,6 +143,7 @@ public class VRChatApiClientImplTest extends TestSupport {
 		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
 
 		assertNotNull(currentUserDto);
+		assertEquals("usr_id", currentUserDto.getId());
 	}
 
 	@Test
@@ -173,6 +207,8 @@ public class VRChatApiClientImplTest extends TestSupport {
 		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
 
 		assertNotNull(favoriteDto);
+		assertEquals("fvrt_xxxx", favoriteDto.getId());
+		assertEquals("avtr_xxxx", favoriteDto.getFavoriteId());
 	}
 
 	@Test
@@ -215,7 +251,13 @@ public class VRChatApiClientImplTest extends TestSupport {
 		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
 		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
 
-		assertNotNull(favoriteDtos);
+		assertThat(favoriteDtos).isNotNull().hasSize(3)
+				.extracting(FavoriteDto::getId, FavoriteDto::getType, FavoriteDto::getFavoriteId)
+				.containsExactly(
+						tuple("fvrt_1", FavoriteTypeDto.AVATAR, "avtr_xxxx"),
+						tuple("fvrt_2", FavoriteTypeDto.FRIEND, "usr_xxxx"),
+						tuple("fvrt_3", FavoriteTypeDto.WORLD, "wrld_xxxx")
+				);
 	}
 
 	@Test
@@ -268,6 +310,8 @@ public class VRChatApiClientImplTest extends TestSupport {
 		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
 
 		assertNotNull(favoriteDto);
+		assertEquals("fvrt_xxxx", favoriteDto.getId());
+		assertEquals("avtr_xxxx", favoriteDto.getFavoriteId());
 	}
 
 	@Test
@@ -311,6 +355,7 @@ public class VRChatApiClientImplTest extends TestSupport {
 		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
 
 		assertNotNull(avatarDto);
+		assertEquals("avtr_xxxx", avatarDto.getId());
 	}
 
 	@Test
@@ -333,6 +378,8 @@ public class VRChatApiClientImplTest extends TestSupport {
 		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
 
 		assertNotNull(currentUserDto);
+		assertEquals("usr_id", currentUserDto.getId());
+		assertEquals("avtr_current", currentUserDto.getCurrentAvatar());
 	}
 
 	@Test
@@ -355,6 +402,8 @@ public class VRChatApiClientImplTest extends TestSupport {
 		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
 
 		assertNotNull(userDto);
+		assertEquals("usr_id", userDto.getId());
+		assertEquals("username", userDto.getUsername());
 	}
 
 	@Test
@@ -377,6 +426,8 @@ public class VRChatApiClientImplTest extends TestSupport {
 		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
 
 		assertNotNull(userDto);
+		assertEquals("usr_id", userDto.getId());
+		assertEquals("username", userDto.getUsername());
 	}
 
 	@Test
@@ -404,7 +455,12 @@ public class VRChatApiClientImplTest extends TestSupport {
 		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
 		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
 
-		assertNotNull(limitedUserDtos);
+		assertThat(limitedUserDtos).isNotNull().hasSize(2)
+				.extracting(LimitedUserDto::getId, LimitedUserDto::getUsername)
+				.containsExactly(
+						tuple("usr_xxxx", "username"),
+						tuple("usr_yyyy", "username2")
+				);
 	}
 
 	@Test
@@ -426,7 +482,265 @@ public class VRChatApiClientImplTest extends TestSupport {
 		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
 		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
 
-		assertNotNull(limitedUserDtos);
+		assertThat(limitedUserDtos).isNotNull().hasSize(2)
+				.extracting(LimitedUserDto::getId, LimitedUserDto::getUsername)
+				.containsExactly(
+						tuple("usr_xxxx", "username"),
+						tuple("usr_yyyy", "username2")
+				);
+	}
+
+	@Test
+	public void testGetFriends() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("limitedUsers.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final List<LimitedUserDto> limitedUserDtos = this.client.getFriends(vrcRequestContext, FriendParameters.Builder.create()
+				.amount(5)
+				.offset(1)
+				.offline(true)
+				.build());
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/auth/user/friends?n=5&offset=1&offline=true", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertThat(limitedUserDtos).isNotNull().hasSize(2)
+				.extracting(LimitedUserDto::getId, LimitedUserDto::getUsername)
+				.containsExactly(
+						tuple("usr_xxxx", "username"),
+						tuple("usr_yyyy", "username2")
+				);
+	}
+
+	@Test
+	public void testGetFriends_Minimal() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("limitedUsers.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final List<LimitedUserDto> limitedUserDtos = this.client.getFriends(vrcRequestContext, FriendParameters.Builder.create().build());
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/auth/user/friends?n=10&offset=0", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertThat(limitedUserDtos).isNotNull().hasSize(2)
+				.extracting(LimitedUserDto::getId, LimitedUserDto::getUsername)
+				.containsExactly(
+						tuple("usr_xxxx", "username"),
+						tuple("usr_yyyy", "username2")
+				);
+	}
+
+	@Test
+	public void testGetFriendStatus() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("friendStatus.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final FriendStatusDto friendStatusDto = this.client.getFriendStatus(vrcRequestContext, "usr_xxxx");
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/user/usr_xxxx/friendStatus", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertNotNull(friendStatusDto);
+		assertTrue(friendStatusDto.getFriend());
+		assertFalse(friendStatusDto.getIncomingRequest());
+		assertFalse(friendStatusDto.getOutgoingRequest());
+	}
+
+	@Test
+	public void testSendFriendRequest() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("notification.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final NotificationDto notificationDto = this.client.sendFriendRequest(vrcRequestContext, "usr_xxxx");
+
+		// then
+		assertEquals("POST", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/user/usr_xxxx/friendRequest", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertNotNull(notificationDto);
+		assertEquals("not_xxxx", notificationDto.getId());
+	}
+
+	@Test
+	public void testAcceptFriendRequest() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("notification.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final boolean success = this.client.acceptFriendRequest(vrcRequestContext, "not_xxxx");
+
+		// then
+		assertEquals("PUT", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/auth/user/notifications/not_xxxx/accept", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertTrue(success);
+	}
+
+	@Test
+	public void testIgnoreFriendRequest() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("notification.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final NotificationDto notificationDto = this.client.ignoreFriendRequest(vrcRequestContext, "not_xxxx");
+
+		// then
+		assertEquals("PUT", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/auth/user/notifications/not_xxxx/hide", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertNotNull(notificationDto);
+		assertEquals("not_xxxx", notificationDto.getId());
+	}
+
+	@Test
+	public void testRemoveFriend() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("success.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final boolean removed = this.client.removeFriend(vrcRequestContext, "usr_xxxx");
+
+		// then
+		assertEquals("DELETE", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/auth/user/friends/usr_xxxx", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertTrue(removed);
+	}
+
+	@Test
+	public void testGetNotifications() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("notifications.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final List<NotificationDto> notificationDtos = this.client.getNotifications(vrcRequestContext, NotificationParameters.Builder.create()
+				.type(NotificationTypeDto.FRIEND_REQUEST)
+				.sent(true)
+				.dateAfter(OffsetDateTime.parse("2021-02-13T12:00:00+01"))
+				.build());
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/auth/user/notifications?type=friendRequest&sent=true&date=2021-02-13T11%3A00%3A00Z", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertThat(notificationDtos).isNotNull();
+	}
+
+	@Test
+	public void testGetNotifications_Minimal() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("notifications.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final List<NotificationDto> notificationDtos = this.client.getNotifications(vrcRequestContext, NotificationParameters.Builder.create().build());
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/auth/user/notifications", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertThat(notificationDtos).isNotNull().hasSize(6)
+				.extracting(NotificationDto::getId, NotificationDto::getType)
+				.containsExactly(
+						tuple("not_1111", NotificationTypeDto.REQUEST_INVITE),
+						tuple("not_2222", NotificationTypeDto.INVITE),
+						tuple("not_3333", NotificationTypeDto.FRIEND_REQUEST),
+						tuple("not_4444", NotificationTypeDto.FRIEND_REQUEST),
+						tuple("not_5555", NotificationTypeDto.MESSAGE),
+						tuple("not_6666", NotificationTypeDto.REQUEST_INVITE_RESPONSE)
+				);
+	}
+
+	@Test
+	public void testMarkNotificationAsRead() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("notification.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final NotificationDto notificationDto = this.client.markNotificationAsRead(vrcRequestContext, "not_xxxx");
+
+		// then
+		assertEquals("PUT", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/auth/user/notifications/not_xxxx/see", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertNotNull(notificationDto);
+		assertEquals("not_xxxx", notificationDto.getId());
 	}
 
 	@Test

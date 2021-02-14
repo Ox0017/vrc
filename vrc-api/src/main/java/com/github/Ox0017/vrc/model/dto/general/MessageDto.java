@@ -1,10 +1,10 @@
-package com.github.Ox0017.vrc.model.dto.error;
+package com.github.Ox0017.vrc.model.dto.general;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ErrorDto {
+public class MessageDto {
 
 	@JsonProperty("message")
 	private String message;

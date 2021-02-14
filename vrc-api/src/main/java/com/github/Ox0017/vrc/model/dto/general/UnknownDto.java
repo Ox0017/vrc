@@ -1,4 +1,4 @@
-package com.github.Ox0017.vrc.model.dto;
+package com.github.Ox0017.vrc.model.dto.general;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

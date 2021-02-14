@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.Ox0017.vrc.model.dto.avatar.AvatarDto;
 import com.github.Ox0017.vrc.model.dto.config.RemoteConfigDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteDto;
+import com.github.Ox0017.vrc.model.dto.friend.FriendStatusDto;
+import com.github.Ox0017.vrc.model.dto.notification.NotificationDto;
 import com.github.Ox0017.vrc.model.dto.user.AuthDto;
 import com.github.Ox0017.vrc.model.dto.user.CurrentUserDto;
 import com.github.Ox0017.vrc.model.dto.user.LimitedUserDto;
@@ -115,6 +117,42 @@ public class DeserializeTest extends TestSupport {
 
 		// then
 		assertNotNull(limitedUserDtos);
+	}
+
+	@Test
+	public void testDeserialize_FriendStatusDto() throws JsonProcessingException {
+		// given
+		final String json = this.readJson("friendStatus.json");
+
+		// when
+		final FriendStatusDto friendStatusDto = this.objectMapper.readValue(json, FriendStatusDto.class);
+
+		// then
+		assertNotNull(friendStatusDto);
+	}
+
+	@Test
+	public void testDeserialize_NotificationDtos() throws JsonProcessingException {
+		// given
+		final String json = this.readJson("notifications.json");
+
+		// when
+		final List<NotificationDto> notificationDtos = Stream.of(this.objectMapper.readValue(json, NotificationDto[].class)).collect(Collectors.toList());
+
+		// then
+		assertNotNull(notificationDtos);
+	}
+
+	@Test
+	public void testDeserialize_NotificationDto() throws JsonProcessingException {
+		// given
+		final String json = this.readJson("notification.json");
+
+		// when
+		final NotificationDto notificationDto = this.objectMapper.readValue(json, NotificationDto.class);
+
+		// then
+		assertNotNull(notificationDto);
 	}
 
 }

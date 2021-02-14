@@ -1,24 +1,18 @@
 package com.github.Ox0017.vrc.model.parameter;
 
-import com.github.Ox0017.vrc.model.dto.favorite.FavoriteTypeDto;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoriteParameters extends PagingParameter implements RequestParameter {
+public class FriendParameters extends PagingParameter implements RequestParameter {
 
-	private final FavoriteTypeDto type;
+	private final boolean offline;
 
-	private FavoriteParameters(final Integer amount, final Integer offset, final FavoriteTypeDto type) {
+	private FriendParameters(final Integer amount, final Integer offset, final boolean offline) {
 		super(amount, offset);
-		this.type = type;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return this.type == null && this.amount == null && this.offset == null;
+		this.offline = offline;
 	}
 
 	@Override
@@ -28,14 +22,14 @@ public class FavoriteParameters extends PagingParameter implements RequestParame
 		}
 
 		final List<NameValuePair> parameters = new ArrayList<>(3);
-		if (this.type != null) {
-			parameters.add(new BasicNameValuePair("type", this.type.getValue()));
-		}
 		if (this.amount != null) {
 			parameters.add(new BasicNameValuePair("n", this.amount.toString()));
 		}
 		if (this.offset != null) {
 			parameters.add(new BasicNameValuePair("offset", this.offset.toString()));
+		}
+		if (this.offline) {
+			parameters.add(new BasicNameValuePair("offline", "true"));
 		}
 
 		final NameValuePair[] result = new NameValuePair[parameters.size()];
@@ -46,27 +40,30 @@ public class FavoriteParameters extends PagingParameter implements RequestParame
 		return result;
 	}
 
+	@Override
+	public boolean isEmpty() {
+		return this.amount == null && this.offset == null && !this.offline;
+	}
+
 	public static class Builder {
 
 		private Builder() {
 		}
 
-		private FavoriteTypeDto type;
+		private boolean offline = false;
 
 		private Integer amount = 10;
 
 		private Integer offset = 0;
 
 		/**
-		 * Adds the type parameter to filter results by their type
+		 * Adds the offline parameter, set with true includes offline friends
 		 *
-		 * @param type FavoriteTypeDto.UNKNOWN will be ignored
+		 * @param offline true or false, default: false
 		 * @return the builder
 		 */
-		public Builder type(final FavoriteTypeDto type) {
-			if (type != FavoriteTypeDto.UNKNOWN) {
-				this.type = type;
-			}
+		public Builder offline(final Boolean offline) {
+			this.offline = Boolean.TRUE.equals(offline);
 			return this;
 		}
 
@@ -104,10 +101,10 @@ public class FavoriteParameters extends PagingParameter implements RequestParame
 		/**
 		 * Completes the build process
 		 *
-		 * @return the FavoriteParameters with all previously set properties
+		 * @return the UserParameters with all previously set properties
 		 */
-		public FavoriteParameters build() {
-			return new FavoriteParameters(this.amount, this.offset, this.type);
+		public FriendParameters build() {
+			return new FriendParameters(this.amount, this.offset, this.offline);
 		}
 
 		public static Builder create() {

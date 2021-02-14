@@ -1,4 +1,4 @@
-package com.github.Ox0017.vrc.model.dto.error;
+package com.github.Ox0017.vrc.model.dto.general;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,13 +7,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class VrcErrorDto {
 
 	@JsonProperty("error")
-	private ErrorDto error;
+	private MessageDto error;
 
-	public ErrorDto getError() {
+	public MessageDto getError() {
 		return this.error;
 	}
 
-	public void setError(final ErrorDto error) {
+	public void setError(final MessageDto error) {
 		this.error = error;
 	}
 

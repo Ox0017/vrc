@@ -1,0 +1,62 @@
+[
+  {
+    "id": "not_1111",
+    "senderUserId": "usr_yyyy",
+    "senderUsername": "Sender Y",
+    "type": "requestInvite",
+    "message": "",
+    "details": "{}",
+    "seen": true,
+    "created_at": "2021-02-14T09:00:01.000Z"
+  },
+  {
+    "id": "not_2222",
+    "senderUserId": "usr_xxxx",
+    "senderUsername": "Sender X",
+    "type": "invite",
+    "message": "",
+    "details": "{\"worldId\":\"wrld_xxxx\",\"worldName\":\"VRChat Home\",\"inviteMessage\":\"Can you come help me with something?\",\"imageUrl\":\"https://s3.amazonaws.com/files.vrchat.cloud/file_xxxx\"}",
+    "seen": true,
+    "created_at": "2021-02-14T09:00:02.000Z"
+  },
+  {
+    "id": "not_3333",
+    "senderUserId": "usr_xxxx",
+    "senderUsername": "Sender X",
+    "type": "friendRequest",
+    "message": "",
+    "details": "{}",
+    "seen": false,
+    "created_at": "2021-02-14T09:00:03.000Z"
+  },
+  {
+    "id": "not_4444",
+    "senderUserId": "usr_xxxx",
+    "senderUsername": "Sender X",
+    "type": "friendRequest",
+    "message": "",
+    "details": "{}",
+    "seen": false,
+    "created_at": "2021-02-14T09:00:04.000Z"
+  },
+  {
+    "id": "not_5555",
+    "senderUserId": "vF8OwsCETo",
+    "senderUsername": "System",
+    "type": "message",
+    "message": "Welcome to VRChat!",
+    "details": "{}",
+    "seen": true,
+    "created_at": "2021-02-14T09:00:00.000Z"
+  },
+  {
+    "id": "not_6666",
+    "senderUserId": "usr_yyyy",
+    "senderUsername": "Sender Y",
+    "type": "requestInviteResponse",
+    "message": "",
+    "details": "{\"inResponseTo\":\"not_1111\",\"responseMessage\":\"I'm about to log off, I'll see you later!\"}",
+    "seen": false,
+    "created_at": "2021-02-14T09:00:05.000Z"
+  }
+]

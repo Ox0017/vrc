@@ -8,16 +8,17 @@ import com.github.Ox0017.vrc.model.VrcRequestContext;
 import com.github.Ox0017.vrc.model.client.Response;
 import com.github.Ox0017.vrc.model.dto.avatar.AvatarDto;
 import com.github.Ox0017.vrc.model.dto.config.RemoteConfigDto;
-import com.github.Ox0017.vrc.model.dto.error.VrcErrorDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteTypeDto;
+import com.github.Ox0017.vrc.model.dto.friend.FriendStatusDto;
+import com.github.Ox0017.vrc.model.dto.general.VrcErrorDto;
+import com.github.Ox0017.vrc.model.dto.general.VrcSuccessDto;
+import com.github.Ox0017.vrc.model.dto.notification.NotificationDto;
 import com.github.Ox0017.vrc.model.dto.user.AuthDto;
 import com.github.Ox0017.vrc.model.dto.user.CurrentUserDto;
 import com.github.Ox0017.vrc.model.dto.user.LimitedUserDto;
 import com.github.Ox0017.vrc.model.dto.user.UserDto;
-import com.github.Ox0017.vrc.model.parameter.FavoriteParameters;
-import com.github.Ox0017.vrc.model.parameter.RequestParameter;
-import com.github.Ox0017.vrc.model.parameter.UserParameters;
+import com.github.Ox0017.vrc.model.parameter.*;
 import com.github.Ox0017.vrc.util.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.*;
@@ -50,7 +51,10 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 	private static final String AVATARS = "avatars";
 	private static final String CONFIG = "config";
 	private static final String FAVORITES = "favorites";
+	private static final String FRIENDS = AUTH_USER + "/friends";
 	private static final String LOGOUT = "logout";
+	private static final String NOTIFICATIONS = AUTH_USER + "/notifications";
+	private static final String USER = "user";
 	private static final String USERS = "users";
 
 	private final String baseUrl;
@@ -388,6 +392,195 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 	}
 
 	@Override
+	public List<LimitedUserDto> getFriends(final VrcRequestContext vrcRequestContext, final FriendParameters friendParameters) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return null;
+		}
+
+		if (friendParameters == null) {
+			throw new IllegalArgumentException("FriendParameters is null");
+		}
+
+		LOGGER.info("Get friends by parameters");
+
+		final HttpUriRequest request = getWithParams(this.baseUrl + FRIENDS, friendParameters);
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		final LimitedUserDto[] limitedUserDtoArray = this.deserializeResponse(response, LimitedUserDto[].class);
+		if (limitedUserDtoArray == null) {
+			return null;
+		}
+		return Stream.of(limitedUserDtoArray).collect(Collectors.toList());
+	}
+
+	@Override
+	public FriendStatusDto getFriendStatus(final VrcRequestContext vrcRequestContext, final String userId) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return null;
+		}
+
+		if (userId == null) {
+			throw new IllegalArgumentException("UserId is null");
+		}
+
+		LOGGER.info("Get friend status for userId {}", userId);
+
+		final HttpUriRequest request = RequestBuilder.get(this.baseUrl + USER + "/" + userId + "/friendStatus").build();
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		return this.deserializeResponse(response, FriendStatusDto.class);
+	}
+
+	@Override
+	public NotificationDto sendFriendRequest(final VrcRequestContext vrcRequestContext, final String userId) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return null;
+		}
+
+		if (userId == null) {
+			throw new IllegalArgumentException("UserId is null");
+		}
+
+		LOGGER.info("Get friend status for userId {}", userId);
+
+		final HttpUriRequest request = RequestBuilder.post(this.baseUrl + USER + "/" + userId + "/friendRequest").build();
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		return this.deserializeResponse(response, NotificationDto.class);
+	}
+
+	@Override
+	public boolean acceptFriendRequest(final VrcRequestContext vrcRequestContext, final String notificationId) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return false;
+		}
+
+		if (notificationId == null) {
+			throw new IllegalArgumentException("NotificationId is null");
+		}
+
+		LOGGER.debug("Accept friend request for notificationId {}", notificationId);
+
+		final HttpUriRequest request = RequestBuilder.put(this.baseUrl + NOTIFICATIONS + "/" + notificationId + "/accept").build();
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+		if (response.is2xxSuccessful()) {
+			final String message = this.deserializeSuccess(response.getResponseBody());
+			LOGGER.info("Accept friend request for notificationId {} was successful: {}", notificationId, message);
+			return true;
+		}
+		else {
+			final String errorMessage = this.deserializeError(response.getResponseBody());
+			LOGGER.info("Accept friend request for notificationId {} failed: {}", notificationId, errorMessage);
+			return false;
+		}
+	}
+
+	@Override
+	public NotificationDto ignoreFriendRequest(final VrcRequestContext vrcRequestContext, final String notificationId) {
+		return this.deleteNotification(vrcRequestContext, notificationId);
+	}
+
+	@Override
+	public boolean removeFriend(final VrcRequestContext vrcRequestContext, final String userId) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return false;
+		}
+
+		if (userId == null) {
+			throw new IllegalArgumentException("UserId is null");
+		}
+
+		LOGGER.debug("Remove friend for userId {}", userId);
+
+		final HttpUriRequest request = RequestBuilder.delete(this.baseUrl + FRIENDS + "/" + userId).build();
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+		if (response.is2xxSuccessful()) {
+			final String message = this.deserializeSuccess(response.getResponseBody());
+			LOGGER.info("Remove friend for userId {} was successful: {}", userId, message);
+			return true;
+		}
+		else {
+			final String errorMessage = this.deserializeError(response.getResponseBody());
+			LOGGER.info("Remove friend for userId {} failed: {}", userId, errorMessage);
+			return false;
+		}
+	}
+
+	@Override
+	public List<NotificationDto> getNotifications(final VrcRequestContext vrcRequestContext, final NotificationParameters notificationParameters) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return null;
+		}
+
+		if (notificationParameters == null) {
+			throw new IllegalArgumentException("NotificationParameters is null");
+		}
+
+		LOGGER.info("Get notification by parameters");
+
+		final HttpUriRequest request = getWithParams(this.baseUrl + NOTIFICATIONS, notificationParameters);
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		final NotificationDto[] notificationDtoArray = this.deserializeResponse(response, NotificationDto[].class);
+		if (notificationDtoArray == null) {
+			return null;
+		}
+		return Stream.of(notificationDtoArray).collect(Collectors.toList());
+	}
+
+	@Override
+	public NotificationDto markNotificationAsRead(final VrcRequestContext vrcRequestContext, final String notificationId) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return null;
+		}
+
+		if (notificationId == null) {
+			throw new IllegalArgumentException("NotificationId is null");
+		}
+
+		LOGGER.debug("Mark notification {} as read", notificationId);
+
+		final HttpUriRequest request = RequestBuilder.put(this.baseUrl + NOTIFICATIONS + "/" + notificationId + "/see").build();
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		return this.deserializeResponse(response, NotificationDto.class);
+	}
+
+	@Override
+	public NotificationDto deleteNotification(final VrcRequestContext vrcRequestContext, final String notificationId) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return null;
+		}
+
+		if (notificationId == null) {
+			throw new IllegalArgumentException("NotificationId is null");
+		}
+
+		LOGGER.debug("Mark notification {} as read", notificationId);
+
+		final HttpUriRequest request = RequestBuilder.put(this.baseUrl + NOTIFICATIONS + "/" + notificationId + "/hide").build();
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		return this.deserializeResponse(response, NotificationDto.class);
+	}
+
+	@Override
 	public boolean logout(final VrcRequestContext vrcRequestContext) {
 		if (isSessionMissing(vrcRequestContext)) {
 			return true;
@@ -511,6 +704,14 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 			}
 		}
 		return null;
+	}
+
+	private String deserializeSuccess(final String body) {
+		final VrcSuccessDto vrcSuccessDto = this.deserializeResponse(body, VrcSuccessDto.class);
+		if (vrcSuccessDto == null || vrcSuccessDto.getSuccess() == null) {
+			return null;
+		}
+		return vrcSuccessDto.getSuccess().getMessage();
 	}
 
 	private String deserializeError(final String body) {

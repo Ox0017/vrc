@@ -8,33 +8,28 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserParameters implements RequestParameter {
+public class UserParameters extends PagingParameter implements RequestParameter {
 
 	private final boolean active; // path parameter
 
-	private Integer amount;
+	private final DeveloperTypeDto developerType;
 
-	private Integer offset;
-
-	private DeveloperTypeDto developerType;
-
-	private String search;
+	private final String search;
 
 	public boolean isActive() {
 		return this.active;
 	}
 
-	private UserParameters(final boolean active, final Integer amount, final Integer offset, final DeveloperTypeDto developerType, final String search) {
+	private UserParameters(final Integer amount, final Integer offset, final boolean active, final DeveloperTypeDto developerType, final String search) {
+		super(amount, offset);
 		this.active = active;
-		this.amount = amount;
-		this.offset = offset;
 		this.developerType = developerType;
 		this.search = search;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return !this.active && this.amount == null && this.offset == null && this.developerType == null && this.search == null;
+		return this.amount == null && this.offset == null && this.developerType == null && this.search == null;
 	}
 
 	@Override
@@ -152,7 +147,7 @@ public class UserParameters implements RequestParameter {
 		 * @return the UserParameters with all previously set properties
 		 */
 		public UserParameters build() {
-			return new UserParameters(this.active, this.amount, this.offset, this.developerType, this.search);
+			return new UserParameters(this.amount, this.offset, this.active, this.developerType, this.search);
 		}
 
 		public static Builder create() {

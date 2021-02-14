@@ -13,13 +13,13 @@ public abstract class TestSupport {
 	protected String readJson(final String name) {
 		final URL url = this.getClass().getClassLoader().getResource("json/" + name);
 		if (url == null) {
-			fail("Could not load json" + name);
+			fail("Could not load " + name);
 		}
 		try {
 			return IOUtils.toString(url, StandardCharsets.UTF_8);
 		}
 		catch (final IOException ex) {
-			fail("Could not load json" + name + ": " + ex.getMessage());
+			fail("Could not load " + name + ": " + ex.getMessage());
 		}
 		return null;
 	}
