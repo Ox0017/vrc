@@ -446,7 +446,7 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 			throw new IllegalArgumentException("UserId is null");
 		}
 
-		LOGGER.info("Get friend status for userId {}", userId);
+		LOGGER.info("Send friend request for userId {}", userId);
 
 		final HttpUriRequest request = RequestBuilder.post(this.baseUrl + USER + "/" + userId + "/friendRequest").build();
 

@@ -118,7 +118,7 @@
 
     <profiles>
         <profile>
-            <id>sign</id>
+            <id>javadoc</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
@@ -137,6 +137,16 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>sign</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
