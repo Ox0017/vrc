@@ -126,7 +126,8 @@ public class WorldParameters extends PagingParameter implements RequestParameter
 
 	@Override
 	public boolean isEmpty() {
-		return false;
+		return this.amount == null && this.offset == null && this.featured == null && this.sortOption == null && this.user == null && this.userId == null && this.orderOption == null
+				&& this.search == null && this.tagInclude == null && this.tagExclude == null && this.releaseStatus == null && this.platform == null;
 	}
 
 	public static class Builder {
