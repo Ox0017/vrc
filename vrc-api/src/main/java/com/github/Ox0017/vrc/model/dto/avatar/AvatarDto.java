@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.github.Ox0017.vrc.model.dto.general.ReleaseStatusDto;
 import com.github.Ox0017.vrc.model.dto.general.UnknownDto;
 import com.github.Ox0017.vrc.model.dto.serialization.deserialize.OffsetDateTimeDeserializer;
 import com.github.Ox0017.vrc.model.dto.serialization.serialize.OffsetDateTimeSerializer;
@@ -34,7 +35,7 @@ public class AvatarDto {
 	private String name;
 
 	@JsonProperty("releaseStatus")
-	private String releaseStatus;
+	private ReleaseStatusDto releaseStatus;
 
 	@JsonProperty("assetUrl")
 	private String assetUrl;
@@ -112,11 +113,11 @@ public class AvatarDto {
 		this.name = name;
 	}
 
-	public String getReleaseStatus() {
+	public ReleaseStatusDto getReleaseStatus() {
 		return this.releaseStatus;
 	}
 
-	public void setReleaseStatus(final String releaseStatus) {
+	public void setReleaseStatus(final ReleaseStatusDto releaseStatus) {
 		this.releaseStatus = releaseStatus;
 	}
 
@@ -224,7 +225,7 @@ public class AvatarDto {
 		sb.append(", updatedAt=").append(this.updatedAt);
 		sb.append(", version=").append(this.version);
 		sb.append(", name='").append(this.name).append('\'');
-		sb.append(", releaseStatus='").append(this.releaseStatus).append('\'');
+		sb.append(", releaseStatus=").append(this.releaseStatus);
 		sb.append(", assetUrl='").append(this.assetUrl).append('\'');
 		sb.append(", assetUrlObject=").append(this.assetUrlObject);
 		sb.append(", authorId='").append(this.authorId).append('\'');

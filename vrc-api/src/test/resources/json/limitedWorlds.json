@@ -1,0 +1,64 @@
+[
+  {
+    "id": "wrld_xxxx",
+    "name": "World Name",
+    "authorId": "usr_xxxx",
+    "authorName": "Author Name",
+    "capacity": 8,
+    "imageUrl": "https://api.vrchat.cloud/api/1/file/file_xxxx",
+    "thumbnailImageUrl": "https://api.vrchat.cloud/api/1/image/file_xxxx",
+    "releaseStatus": "public",
+    "organization": "vrchat",
+    "tags": [
+      "system_created_recently",
+      "system_updated_recently",
+      "system_approved",
+      "author_tag_hot",
+      "author_tag_new"
+    ],
+    "favorites": 22,
+    "created_at": "2021-02-19T00:00:01.130Z",
+    "updated_at": "2021-02-21T00:00:01.773Z",
+    "publicationDate": "2021-02-21T00:00:01.366Z",
+    "labsPublicationDate": "2021-02-19T00:00:01.279Z",
+    "unityPackages": [
+      {
+        "platform": "standalonewindows",
+        "unityVersion": "2018.4.20f1"
+      }
+    ],
+    "popularity": 4,
+    "heat": 4,
+    "occupants": 1
+  },
+  {
+    "id": "wrld_yyyy",
+    "name": "World Name 2",
+    "authorId": "usr_yyyy",
+    "authorName": "Author Name 2",
+    "capacity": 16,
+    "imageUrl": "https://api.vrchat.cloud/api/1/file/file_yyyy",
+    "thumbnailImageUrl": "https://api.vrchat.cloud/api/1/image/file_yyyy",
+    "releaseStatus": "public",
+    "organization": "vrchat",
+    "tags": [
+      "author_tag_chill",
+      "system_labs",
+      "system_updated_recently"
+    ],
+    "favorites": 11,
+    "created_at": "2021-02-04T00:00:01.873Z",
+    "updated_at": "2021-02-21T00:00:01.060Z",
+    "publicationDate": "none",
+    "labsPublicationDate": "2021-02-04T00:00:01.981Z",
+    "unityPackages": [
+      {
+        "platform": "standalonewindows",
+        "unityVersion": "2018.4.20f1"
+      }
+    ],
+    "popularity": 4,
+    "heat": 3,
+    "occupants": 1
+  }
+]

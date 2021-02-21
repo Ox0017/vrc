@@ -10,10 +10,9 @@ import com.github.Ox0017.vrc.model.dto.notification.NotificationDto;
 import com.github.Ox0017.vrc.model.dto.user.CurrentUserDto;
 import com.github.Ox0017.vrc.model.dto.user.LimitedUserDto;
 import com.github.Ox0017.vrc.model.dto.user.UserDto;
-import com.github.Ox0017.vrc.model.parameter.FavoriteParameters;
-import com.github.Ox0017.vrc.model.parameter.FriendParameters;
-import com.github.Ox0017.vrc.model.parameter.NotificationParameters;
-import com.github.Ox0017.vrc.model.parameter.UserParameters;
+import com.github.Ox0017.vrc.model.dto.world.LimitedWorldDto;
+import com.github.Ox0017.vrc.model.dto.world.WorldDto;
+import com.github.Ox0017.vrc.model.parameter.*;
 
 import java.util.List;
 
@@ -78,9 +77,10 @@ public interface VRChatApiClient {
 	 * @param vrcRequestContext session with auth and apiKey should already exist
 	 * @param favoriteTypeDto   type of the favorite (UNKNOWN type is not supported)
 	 * @param favoriteId        example: avtr_11111111-2222-aaaa-bbbb-333333333333
+	 * @param tag               example: avatars1
 	 * @return favorite with id (fvrt_11111111-2222-aaaa-bbbb-333333333333)
 	 */
-	FavoriteDto addFavorite(final VrcRequestContext vrcRequestContext, final FavoriteTypeDto favoriteTypeDto, final String favoriteId);
+	FavoriteDto addFavorite(final VrcRequestContext vrcRequestContext, final FavoriteTypeDto favoriteTypeDto, final String favoriteId, final String tag);
 
 	/**
 	 * <p>Removes favorite by id</p>
@@ -246,6 +246,25 @@ public interface VRChatApiClient {
 	 * @return the deleted notification
 	 */
 	NotificationDto deleteNotification(final VrcRequestContext vrcRequestContext, final String notificationId);
+
+	/**
+	 * <p>Get world by id</p>
+	 *
+	 * @param vrcRequestContext session with auth and apiKey should already exist
+	 * @param worldId           example: wrld_11111111-2222-aaaa-bbbb-333333333333
+	 * @return world object
+	 */
+	WorldDto getWorldById(final VrcRequestContext vrcRequestContext, final String worldId);
+
+	/**
+	 * <p>Get worlds by given parameters</p>
+	 *
+	 * @param vrcRequestContext session with auth and apiKey should already exist
+	 * @param worldParameters   to filter the result, for example only sent notifications.
+	 *                          Use the builder methods to add the parameters: WorldParameters.Builder.create()
+	 * @return list of selected worlds
+	 */
+	List<LimitedWorldDto> getWorlds(final VrcRequestContext vrcRequestContext, final WorldParameters worldParameters);
 
 	/**
 	 * <p>Invalidates the current session.</p>

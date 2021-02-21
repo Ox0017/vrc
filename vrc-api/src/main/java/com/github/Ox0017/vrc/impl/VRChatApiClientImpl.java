@@ -18,6 +18,8 @@ import com.github.Ox0017.vrc.model.dto.user.AuthDto;
 import com.github.Ox0017.vrc.model.dto.user.CurrentUserDto;
 import com.github.Ox0017.vrc.model.dto.user.LimitedUserDto;
 import com.github.Ox0017.vrc.model.dto.user.UserDto;
+import com.github.Ox0017.vrc.model.dto.world.LimitedWorldDto;
+import com.github.Ox0017.vrc.model.dto.world.WorldDto;
 import com.github.Ox0017.vrc.model.parameter.*;
 import com.github.Ox0017.vrc.util.StringUtils;
 import org.apache.commons.io.IOUtils;
@@ -56,6 +58,7 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 	private static final String NOTIFICATIONS = AUTH_USER + "/notifications";
 	private static final String USER = "user";
 	private static final String USERS = "users";
+	private static final String WORLDS = "worlds";
 
 	private final String baseUrl;
 
@@ -229,7 +232,7 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 	}
 
 	@Override
-	public FavoriteDto addFavorite(final VrcRequestContext vrcRequestContext, final FavoriteTypeDto favoriteTypeDto, final String favoriteId) {
+	public FavoriteDto addFavorite(final VrcRequestContext vrcRequestContext, final FavoriteTypeDto favoriteTypeDto, final String favoriteId, final String tag) {
 		if (isSessionMissing(vrcRequestContext)) {
 			LOGGER.warn("Session is missing");
 			return null;
@@ -244,6 +247,9 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 		if (favoriteId == null) {
 			throw new IllegalArgumentException("FavoriteId is null");
 		}
+		if (tag == null) {
+			throw new IllegalArgumentException("Tag is null");
+		}
 
 		LOGGER.info("Add favorite {} {}", favoriteTypeDto, favoriteId);
 
@@ -252,7 +258,7 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 		final FavoriteDto favoriteDto = new FavoriteDto();
 		favoriteDto.setFavoriteId(favoriteId);
 		favoriteDto.setType(favoriteTypeDto);
-		favoriteDto.setTags(Collections.singletonList(""));
+		favoriteDto.setTags(Collections.singletonList(tag));
 
 		final Response response = this.executeRequestWithBody(request, vrcRequestContext, favoriteDto);
 
@@ -578,6 +584,50 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 		final Response response = this.executeRequest(request, vrcRequestContext);
 
 		return this.deserializeResponse(response, NotificationDto.class);
+	}
+
+	@Override
+	public WorldDto getWorldById(final VrcRequestContext vrcRequestContext, final String worldId) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return null;
+		}
+
+		if (worldId == null) {
+			throw new IllegalArgumentException("WorldId is null");
+		}
+
+		LOGGER.info("Get world for id {}", worldId);
+
+		final HttpUriRequest request = RequestBuilder.get(this.baseUrl + WORLDS + "/" + worldId).build();
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		return this.deserializeResponse(response, WorldDto.class);
+	}
+
+	@Override
+	public List<LimitedWorldDto> getWorlds(final VrcRequestContext vrcRequestContext, final WorldParameters worldParameters) {
+		if (isSessionMissing(vrcRequestContext)) {
+			LOGGER.warn("Session is missing");
+			return null;
+		}
+
+		if (worldParameters == null) {
+			throw new IllegalArgumentException("WorldParameters is null");
+		}
+
+		LOGGER.info("Get worlds by parameters");
+
+		final HttpUriRequest request = getWithParams(this.baseUrl + WORLDS + worldParameters.getEndpoint(), worldParameters);
+
+		final Response response = this.executeRequest(request, vrcRequestContext);
+
+		final LimitedWorldDto[] limitedWorldDtoArray = this.deserializeResponse(response, LimitedWorldDto[].class);
+		if (limitedWorldDtoArray == null) {
+			return null;
+		}
+		return Stream.of(limitedWorldDtoArray).collect(Collectors.toList());
 	}
 
 	@Override

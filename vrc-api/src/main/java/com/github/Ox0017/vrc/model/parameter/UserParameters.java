@@ -131,7 +131,7 @@ public class UserParameters extends PagingParameter implements RequestParameter 
 		}
 
 		/**
-		 * Adds the type parameter to filter results by their type
+		 * Adds the search parameter to filter results by a given text
 		 *
 		 * @param search a string to search for in user names
 		 * @return the builder

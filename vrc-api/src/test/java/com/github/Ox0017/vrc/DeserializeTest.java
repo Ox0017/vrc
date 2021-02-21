@@ -11,6 +11,8 @@ import com.github.Ox0017.vrc.model.dto.user.AuthDto;
 import com.github.Ox0017.vrc.model.dto.user.CurrentUserDto;
 import com.github.Ox0017.vrc.model.dto.user.LimitedUserDto;
 import com.github.Ox0017.vrc.model.dto.user.UserDto;
+import com.github.Ox0017.vrc.model.dto.world.LimitedWorldDto;
+import com.github.Ox0017.vrc.model.dto.world.WorldDto;
 import org.junit.Test;
 
 import java.util.List;
@@ -153,6 +155,30 @@ public class DeserializeTest extends TestSupport {
 
 		// then
 		assertNotNull(notificationDto);
+	}
+
+	@Test
+	public void testDeserialize_WorldDto() throws JsonProcessingException {
+		// given
+		final String json = this.readJson("world.json");
+
+		// when
+		final WorldDto worldDto = this.objectMapper.readValue(json, WorldDto.class);
+
+		// then
+		assertNotNull(worldDto);
+	}
+
+	@Test
+	public void testDeserialize_LimitedWorldDtos() throws JsonProcessingException {
+		// given
+		final String json = this.readJson("limitedWorlds.json");
+
+		// when
+		final List<LimitedWorldDto> limitedWorldDtos = Stream.of(this.objectMapper.readValue(json, LimitedWorldDto[].class)).collect(Collectors.toList());
+
+		// then
+		assertNotNull(limitedWorldDtos);
 	}
 
 }

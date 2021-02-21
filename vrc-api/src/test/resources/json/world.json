@@ -1,0 +1,87 @@
+{
+  "id": "wrld_xxxx",
+  "name": "World Name",
+  "description": "World Description",
+  "featured": false,
+  "authorId": "authorId",
+  "authorName": "Author Name",
+  "capacity": 23,
+  "tags": [
+    "system_created_recently",
+    "system_updated_recently",
+    "author_tag_hangout",
+    "system_approved",
+    "admin_hide_new",
+    "admin_approved"
+  ],
+  "releaseStatus": "public",
+  "imageUrl": "https://api.vrchat.cloud/api/1/file/file_xxxx",
+  "thumbnailImageUrl": "https://api.vrchat.cloud/api/1/file/file_xxxx",
+  "assetUrl": "https://api.vrchat.cloud/api/1/file/file_xxxx",
+  "assetUrlObject": {},
+  "pluginUrl": "",
+  "pluginUrlObject": {},
+  "unityPackageUrl": "",
+  "unityPackageUrlObject": {},
+  "namespace": "",
+  "unityPackages": [
+    {
+      "id": "unp_xxxx",
+      "assetUrl": "https://api.vrchat.cloud/api/1/file/file_xxxx",
+      "pluginUrl": "",
+      "unityVersion": "5.3.4p1",
+      "unitySortNumber": 50304010,
+      "assetVersion": 0,
+      "platform": "standalonewindows",
+      "created_at": "2017-08-18T00:01:02.469Z"
+    },
+    {
+      "id": "unp_yyyy",
+      "assetUrl": "https://api.vrchat.cloud/api/1/file/file_yyyy",
+      "pluginUrl": "",
+      "unityVersion": "5.6.3f1",
+      "unitySortNumber": 50603000,
+      "assetVersion": 1,
+      "platform": "standalonewindows",
+      "created_at": "2017-09-01T00:01:02.634Z"
+    },
+    {
+      "id": "unp_zzzz",
+      "assetUrl": "https://api.vrchat.cloud/api/1/file/file_zzzz",
+      "pluginUrl": "",
+      "unityVersion": "5.6.3p1",
+      "unitySortNumber": 50603010,
+      "assetVersion": 1,
+      "platform": "standalonewindows",
+      "created_at": "2017-12-13T00:01:02.393Z"
+    }
+  ],
+  "version": 689,
+  "organization": "vrchat",
+  "previewYoutubeId": null,
+  "favorites": 65001,
+  "created_at": "2017-01-19T00:01:02.000Z",
+  "updated_at": "2021-01-23T00:01:02.102Z",
+  "publicationDate": "2019-05-08T00:01:02.581Z",
+  "labsPublicationDate": "none",
+  "visits": 123456,
+  "popularity": 9,
+  "heat": 6,
+  "publicOccupants": 100,
+  "privateOccupants": 3,
+  "occupants": 103,
+  "instances": [
+    [
+      "123",
+      22
+    ],
+    [
+      "345",
+      14
+    ],
+    [
+      "789",
+      8
+    ]
+  ]
+}

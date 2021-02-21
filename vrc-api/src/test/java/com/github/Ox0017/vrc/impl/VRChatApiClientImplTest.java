@@ -8,16 +8,19 @@ import com.github.Ox0017.vrc.model.dto.config.RemoteConfigDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteDto;
 import com.github.Ox0017.vrc.model.dto.favorite.FavoriteTypeDto;
 import com.github.Ox0017.vrc.model.dto.friend.FriendStatusDto;
+import com.github.Ox0017.vrc.model.dto.general.PlatformDto;
+import com.github.Ox0017.vrc.model.dto.general.ReleaseStatusDto;
 import com.github.Ox0017.vrc.model.dto.notification.NotificationDto;
 import com.github.Ox0017.vrc.model.dto.notification.NotificationTypeDto;
 import com.github.Ox0017.vrc.model.dto.user.CurrentUserDto;
 import com.github.Ox0017.vrc.model.dto.user.DeveloperTypeDto;
 import com.github.Ox0017.vrc.model.dto.user.LimitedUserDto;
 import com.github.Ox0017.vrc.model.dto.user.UserDto;
-import com.github.Ox0017.vrc.model.parameter.FavoriteParameters;
-import com.github.Ox0017.vrc.model.parameter.FriendParameters;
-import com.github.Ox0017.vrc.model.parameter.NotificationParameters;
-import com.github.Ox0017.vrc.model.parameter.UserParameters;
+import com.github.Ox0017.vrc.model.dto.world.LimitedWorldDto;
+import com.github.Ox0017.vrc.model.dto.world.WorldDto;
+import com.github.Ox0017.vrc.model.parameter.*;
+import com.github.Ox0017.vrc.model.parameter.options.OrderOption;
+import com.github.Ox0017.vrc.model.parameter.options.SortOption;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -297,13 +300,13 @@ public class VRChatApiClientImplTest extends TestSupport {
 		when(this.httpClient.execute(this.bodyRequestCaptor.capture())).thenReturn(httpResponseOk(json, true));
 
 		// when
-		final FavoriteDto favoriteDto = this.client.addFavorite(vrcRequestContext, FavoriteTypeDto.AVATAR, "avtr_xxxx");
+		final FavoriteDto favoriteDto = this.client.addFavorite(vrcRequestContext, FavoriteTypeDto.AVATAR, "avtr_xxxx", "avatars1");
 
 		// then
 		assertEquals("POST", this.bodyRequestCaptor.getValue().getMethod());
 		assertEquals("https://api.vrchat.cloud/api/1/favorites", this.bodyRequestCaptor.getValue().getURI().toString());
 		final String body = inputStreamToString(this.bodyRequestCaptor.getValue().getEntity().getContent());
-		assertEquals("{\"type\":\"avatar\",\"favoriteId\":\"avtr_xxxx\",\"tags\":[\"\"]}", body); // FavoriteDto without id
+		assertEquals("{\"type\":\"avatar\",\"favoriteId\":\"avtr_xxxx\",\"tags\":[\"avatars1\"]}", body); // FavoriteDto without id
 
 		assertTrue(vrcRequestContext.hasAuth());
 		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
@@ -741,6 +744,177 @@ public class VRChatApiClientImplTest extends TestSupport {
 
 		assertNotNull(notificationDto);
 		assertEquals("not_xxxx", notificationDto.getId());
+	}
+
+	@Test
+	public void testGetWorldById() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("world.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final WorldDto worldDto = this.client.getWorldById(vrcRequestContext, "wrld_xxxx");
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/worlds/wrld_xxxx", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertNotNull(worldDto);
+		assertEquals("wrld_xxxx", worldDto.getId());
+	}
+
+	@Test
+	public void testGetWorlds() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("limitedWorlds.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final List<LimitedWorldDto> limitedWorldDtos = this.client.getWorlds(vrcRequestContext, WorldParameters.Builder.create()
+				.amount(5)
+				.offset(1)
+				.featured(false)
+				.sort(SortOption.UPDATED)
+				.user("user")
+				.userId("usr_xxxx")
+				.order(OrderOption.DESCENDING)
+				.search("text")
+				.tagInclude("include")
+				.tagExclude("exclude")
+				.releaseStatus(ReleaseStatusDto.PUBLIC)
+				.platformDto(PlatformDto.WINDOWS)
+				.build());
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/worlds?n=5&offset=1&featured=false&sort=updated&user=user&userId=usr_xxxx&order=descending&search=text&tag=include&notag=exclude&releaseStatus=public&platform=standalonewindows", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertThat(limitedWorldDtos).isNotNull().hasSize(2)
+				.extracting(LimitedWorldDto::getId, LimitedWorldDto::getName)
+				.containsExactly(
+						tuple("wrld_xxxx", "World Name"),
+						tuple("wrld_yyyy", "World Name 2")
+				);
+	}
+
+	@Test
+	public void testGetWorlds_Minimal() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("limitedWorlds.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final List<LimitedWorldDto> limitedWorldDtos = this.client.getWorlds(vrcRequestContext, WorldParameters.Builder.create().build());
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/worlds?n=10&offset=0", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertThat(limitedWorldDtos).isNotNull().hasSize(2)
+				.extracting(LimitedWorldDto::getId, LimitedWorldDto::getName)
+				.containsExactly(
+						tuple("wrld_xxxx", "World Name"),
+						tuple("wrld_yyyy", "World Name 2")
+				);
+	}
+
+	@Test
+	public void testGetWorlds_Active() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("limitedWorlds.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final List<LimitedWorldDto> limitedWorldDtos = this.client.getWorlds(vrcRequestContext, WorldParameters.Builder.create().inActiveWorlds().build());
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/worlds/active?n=10&offset=0", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertThat(limitedWorldDtos).isNotNull().hasSize(2)
+				.extracting(LimitedWorldDto::getId, LimitedWorldDto::getName)
+				.containsExactly(
+						tuple("wrld_xxxx", "World Name"),
+						tuple("wrld_yyyy", "World Name 2")
+				);
+	}
+
+	@Test
+	public void testGetWorlds_Recent() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("limitedWorlds.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final List<LimitedWorldDto> limitedWorldDtos = this.client.getWorlds(vrcRequestContext, WorldParameters.Builder.create().inRecentlyVisitedWorlds().build());
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/worlds/recent?n=10&offset=0", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertThat(limitedWorldDtos).isNotNull().hasSize(2)
+				.extracting(LimitedWorldDto::getId, LimitedWorldDto::getName)
+				.containsExactly(
+						tuple("wrld_xxxx", "World Name"),
+						tuple("wrld_yyyy", "World Name 2")
+				);
+	}
+
+	@Test
+	public void testGetWorlds_Favorite() throws IOException {
+		// given
+		final VrcRequestContext vrcRequestContext = vrcRequestContextWithSession();
+
+		final String json = this.readJson("limitedWorlds.json");
+		when(this.httpClient.execute(this.requestCaptor.capture())).thenReturn(httpResponseOk(json, true));
+
+		// when
+		final List<LimitedWorldDto> limitedWorldDtos = this.client.getWorlds(vrcRequestContext, WorldParameters.Builder.create().inFavoriteWorlds().build());
+
+		// then
+		assertEquals("GET", this.requestCaptor.getValue().getMethod());
+		assertEquals("https://api.vrchat.cloud/api/1/worlds/favorites?n=10&offset=0", this.requestCaptor.getValue().getURI().toString());
+
+		assertTrue(vrcRequestContext.hasAuth());
+		assertEquals(AUTH_VALUE, vrcRequestContext.getAuth());
+		assertEquals(API_KEY_VALUE, vrcRequestContext.getApiKey());
+
+		assertThat(limitedWorldDtos).isNotNull().hasSize(2)
+				.extracting(LimitedWorldDto::getId, LimitedWorldDto::getName)
+				.containsExactly(
+						tuple("wrld_xxxx", "World Name"),
+						tuple("wrld_yyyy", "World Name 2")
+				);
 	}
 
 	@Test
