@@ -11,7 +11,6 @@ import com.github.Ox0017.vrc.model.dto.serialization.serialize.OffsetDateTimeSer
 
 import java.time.OffsetDateTime;
 
-// TODO: unityPackage objects look to be separate truncated versions or variants of their parenting objects (World object, Avatar object, etc)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UnityPackageDto {
 
@@ -31,6 +30,12 @@ public class UnityPackageDto {
 
 	@JsonProperty("assetUrlObject")
 	private UnknownDto assetUrlObject;
+
+	@JsonProperty("pluginUrl")
+	private String pluginUrl;
+
+	@JsonProperty("pluginUrlObject")
+	private UnknownDto pluginUrlObject;
 
 	@JsonProperty("platform")
 	private PlatformDto platform;
@@ -81,6 +86,22 @@ public class UnityPackageDto {
 		this.assetUrlObject = assetUrlObject;
 	}
 
+	public String getPluginUrl() {
+		return this.pluginUrl;
+	}
+
+	public void setPluginUrl(final String pluginUrl) {
+		this.pluginUrl = pluginUrl;
+	}
+
+	public UnknownDto getPluginUrlObject() {
+		return this.pluginUrlObject;
+	}
+
+	public void setPluginUrlObject(final UnknownDto pluginUrlObject) {
+		this.pluginUrlObject = pluginUrlObject;
+	}
+
 	public PlatformDto getPlatform() {
 		return this.platform;
 	}
@@ -113,6 +134,8 @@ public class UnityPackageDto {
 		sb.append(", assetVersion=").append(this.assetVersion);
 		sb.append(", assetUrl='").append(this.assetUrl).append('\'');
 		sb.append(", assetUrlObject=").append(this.assetUrlObject);
+		sb.append(", pluginUrl='").append(this.pluginUrl).append('\'');
+		sb.append(", pluginUrlObject=").append(this.pluginUrlObject);
 		sb.append(", platform=").append(this.platform);
 		sb.append(", unitySortNumber=").append(this.unitySortNumber);
 		sb.append(", unityVersion='").append(this.unityVersion).append('\'');

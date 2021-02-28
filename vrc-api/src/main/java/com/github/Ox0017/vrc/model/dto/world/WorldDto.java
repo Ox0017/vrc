@@ -78,9 +78,6 @@ public class WorldDto {
 	@JsonProperty("namespace")
 	private String namespace;
 
-	@JsonProperty("occupants")
-	private Long occupants;
-
 	@JsonProperty("organization")
 	private String organization;
 
@@ -93,8 +90,14 @@ public class WorldDto {
 	@JsonProperty("popularity")
 	private Long popularity;
 
+	@JsonProperty("occupants")
+	private Long occupants;
+
 	@JsonProperty("publicOccupants")
 	private Long publicOccupants;
+
+	@JsonProperty("privateOccupants")
+	private Long privateOccupants;
 
 	@JsonProperty("releaseStatus")
 	private ReleaseStatusDto releaseStatus;
@@ -119,6 +122,9 @@ public class WorldDto {
 
 	@JsonProperty("visits")
 	private Long visits;
+
+	@JsonProperty("previewYoutubeId")
+	private String previewYoutubeId;
 
 	public String getId() {
 		return this.id;
@@ -264,14 +270,6 @@ public class WorldDto {
 		this.namespace = namespace;
 	}
 
-	public Long getOccupants() {
-		return this.occupants;
-	}
-
-	public void setOccupants(final Long occupants) {
-		this.occupants = occupants;
-	}
-
 	public String getOrganization() {
 		return this.organization;
 	}
@@ -304,12 +302,28 @@ public class WorldDto {
 		this.popularity = popularity;
 	}
 
+	public Long getOccupants() {
+		return this.occupants;
+	}
+
+	public void setOccupants(final Long occupants) {
+		this.occupants = occupants;
+	}
+
 	public Long getPublicOccupants() {
 		return this.publicOccupants;
 	}
 
 	public void setPublicOccupants(final Long publicOccupants) {
 		this.publicOccupants = publicOccupants;
+	}
+
+	public Long getPrivateOccupants() {
+		return this.privateOccupants;
+	}
+
+	public void setPrivateOccupants(final Long privateOccupants) {
+		this.privateOccupants = privateOccupants;
 	}
 
 	public ReleaseStatusDto getReleaseStatus() {
@@ -376,6 +390,14 @@ public class WorldDto {
 		this.visits = visits;
 	}
 
+	public String getPreviewYoutubeId() {
+		return this.previewYoutubeId;
+	}
+
+	public void setPreviewYoutubeId(final String previewYoutubeId) {
+		this.previewYoutubeId = previewYoutubeId;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("WorldDto [");
@@ -397,12 +419,13 @@ public class WorldDto {
 		sb.append(", imageUrl='").append(this.imageUrl).append('\'');
 		sb.append(", instances=").append(this.instances);
 		sb.append(", namespace='").append(this.namespace).append('\'');
-		sb.append(", occupants=").append(this.occupants);
 		sb.append(", organization='").append(this.organization).append('\'');
 		sb.append(", pluginUrl='").append(this.pluginUrl).append('\'');
 		sb.append(", pluginUrlObject=").append(this.pluginUrlObject);
 		sb.append(", popularity=").append(this.popularity);
+		sb.append(", occupants=").append(this.occupants);
 		sb.append(", publicOccupants=").append(this.publicOccupants);
+		sb.append(", privateOccupants=").append(this.privateOccupants);
 		sb.append(", releaseStatus=").append(this.releaseStatus);
 		sb.append(", tags=").append(this.tags);
 		sb.append(", thumbnailImageUrl='").append(this.thumbnailImageUrl).append('\'');
@@ -411,6 +434,7 @@ public class WorldDto {
 		sb.append(", unityPackages=").append(this.unityPackages);
 		sb.append(", version=").append(this.version);
 		sb.append(", visits=").append(this.visits);
+		sb.append(", previewYoutubeId='").append(this.previewYoutubeId).append('\'');
 		sb.append(']');
 		return sb.toString();
 	}
