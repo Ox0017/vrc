@@ -1,8 +1,10 @@
 # VRChatApiClient
 
-Java based implementation based on [vrchatapi.github.io](https://github.com/vrchatapi/vrchatapi.github.io)
+Java implementation based on [vrchatapi.github.io](https://github.com/vrchatapi/vrchatapi.github.io)
 
 ## Disclaimer
+
+Using this API is allowed for non malicious usage. Abuse of the API may result in account termination!
 
 This is the official response of the VRChat Team (from Tupper more specifically) on the usage of the VRChat API.
 
@@ -15,7 +17,7 @@ This is the official response of the VRChat Team (from Tupper more specifically)
 ## Description
 
 This package provides an API client that can be used against the VRChat API.
-Not all requests are implemented yet, have a look at the [VRChatApiClient](https://github.com/Ox0017/vrc/blob/main/vrc-api/src/main/java/com/github/Ox0017/vrc/VRChatApiClient.java) interface to see all currently available methods.
+Have a look at the [VRChatApiClient](https://github.com/Ox0017/vrc/blob/main/vrc-api/src/main/java/com/github/Ox0017/vrc/VRChatApiClient.java) interface to see all available methods.
 
 ### Usage
 
