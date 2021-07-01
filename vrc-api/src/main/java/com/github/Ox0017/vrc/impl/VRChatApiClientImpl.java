@@ -814,22 +814,24 @@ public class VRChatApiClientImpl implements VRChatApiClient {
 	}
 
 	private static void setHeaders(final HttpUriRequest request, final VrcRequestContext vrcRequestContext) {
+		final List<String> cookies = new ArrayList<>();
+
+		if (vrcRequestContext.getApiKey() != null) {
+			cookies.add(API_KEY_HEADER + "=" + vrcRequestContext.getApiKey());
+			LOGGER.trace("Add {}", API_KEY_HEADER);
+		}
+
 		if (vrcRequestContext.hasAuth()) {
-			request.addHeader(AUTH_HEADER, vrcRequestContext.getAuth());
-			LOGGER.trace("Add header {}", AUTH_HEADER);
+			cookies.add(AUTH_HEADER + "=" + vrcRequestContext.getAuth());
+			LOGGER.trace("Add {}", AUTH_HEADER);
 		}
 		else if (vrcRequestContext.hasCredentials()) {
 			request.addHeader(HttpHeaders.AUTHORIZATION, getBasicAuth(vrcRequestContext));
 			LOGGER.trace("Add header {}", HttpHeaders.AUTHORIZATION);
 		}
 
-		if (vrcRequestContext.getApiKey() != null) {
-			request.addHeader(API_KEY_HEADER, vrcRequestContext.getApiKey());
-			LOGGER.trace("Add header {}", API_KEY_HEADER);
-		}
-		if (vrcRequestContext.getCfduid() != null) {
-			request.addHeader(CF_HEADER, vrcRequestContext.getCfduid());
-			LOGGER.trace("Add header {}", CF_HEADER);
+		if (!cookies.isEmpty()) {
+			request.addHeader("cookie", String.join("; ", cookies));
 		}
 	}
 

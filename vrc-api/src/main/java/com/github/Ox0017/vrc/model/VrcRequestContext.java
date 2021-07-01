@@ -1,5 +1,7 @@
 package com.github.Ox0017.vrc.model;
 
+import com.github.Ox0017.vrc.util.StringUtils;
+
 public class VrcRequestContext {
 
 	private String username;
@@ -67,7 +69,7 @@ public class VrcRequestContext {
 	}
 
 	public boolean hasCredentials() {
-		return this.username != null && this.password != null;
+		return StringUtils.trimToNull(this.username) != null && this.password != null;
 	}
 
 	public VrcRequestContext copy() {
@@ -88,7 +90,7 @@ public class VrcRequestContext {
 		}
 
 		this.username = vrcRequestContext.username;
-		this.password = vrcRequestContext.password;
+		this.password = vrcRequestContext.password != null ? vrcRequestContext.password.clone() : null;
 		this.auth = vrcRequestContext.auth;
 		this.apiKey = vrcRequestContext.apiKey;
 		this.cfduid = vrcRequestContext.cfduid;
